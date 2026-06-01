@@ -3,4 +3,4 @@ Use this skill to define a use case for an AI-DLC workflow. Output: a markdown f
 
 # tech-env skill
 
-Use this skill to document your technical environment and enhance the Construction phase accuracy. This skill speeds of reverse engineering
+Use this skill to document your technical environment and enhance the Construction phase accuracy. This skill speeds up reverse engineering
