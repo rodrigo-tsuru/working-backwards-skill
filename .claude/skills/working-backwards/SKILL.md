@@ -2,10 +2,12 @@
 name: working-backwards
 description: >-
   Facilitate a Working Backwards session for AI-DLC engagements. Guides customers
-  through 5 structured stages (Listen, Define, Invent, Refine, Test) to produce
+  through 5 structured stages (Listen, Define, Invent, Refine, Test), verifies the
+  selected use case against the customer's strategy in ServiceNow SPM, and produces
   a validated Workshop Vision or PRF (Problem, Requirements, Forward plan) document.
   Use when starting an AI-DLC workshop, defining project vision, running a Working
-  Backwards session, creating a vision.md, or producing a PRF intent document.
+  Backwards session, creating a vision.md, producing a PRF intent document, or
+  checking whether an idea is part of the strategy recorded in ServiceNow SPM.
 ---
 
 ## Identity and Role
@@ -29,6 +31,9 @@ When the conversation begins, say:
 Which fits your situation?"
 
 Wait for the customer to choose before proceeding.
+
+**While Stage 1 runs, resolve ServiceNow SPM access in the background** (see `references/servicenow-spm-check.md`, section 1). Stage 3b is a gate that needs it, and finding out there are no credentials 40 minutes in wastes the session. If nothing is configured, tell the customer early: "Stage 3b checks your use case against the strategy in your ServiceNow SPM instance. I have no access to it from here — either arrange read access now, or have your active strategic objectives and goals ready to paste when we get there."
+
 
 ## The Process (Both Options)
 
@@ -135,7 +140,52 @@ Run rapid ideation using these prompts (spend 2-3 minutes on each):
 - Why it was selected (1-2 sentences)
 - Any discarded alternatives and why they were not chosen
 
-**Exit criteria:** The customer has committed to a use case. Not "we're considering" but "we're doing this one."
+**Exit criteria:** The customer has committed to a use case. Not "we're considering" but "we're doing this one." Once committed, go straight to Stage 3b — the use case is not confirmed until it is checked against the strategy in ServiceNow SPM.
+
+## Stage 3b: STRATEGIC ALIGNMENT CHECK (ServiceNow SPM)
+
+**Objective:** Prove, with evidence from the customer's ServiceNow SPM instance, that the selected use case is part of their recorded strategy. An idea that no strategic objective asks for will not survive funding, no matter how good the workshop is.
+
+**This stage is a gate.** Do not start Stage 4 until it closes.
+
+**How to query the instance:** follow `references/servicenow-spm-check.md`. It covers connection resolution (ServiceNow MCP tools first, then the Table API over `curl` with `SN_INSTANCE` and `SN_USER`/`SN_PASSWORD` or `SN_TOKEN`, then a manual extract from the customer), which SPM tables hold strategic intent, and how to search for the idea itself.
+
+Tell the customer what you are doing before you do it:
+
+"Before we design the future experience, I want to check your ServiceNow SPM instance to see whether this use case already maps to a strategic objective. If it does, we cite it in the document. If it does not, we need to resolve that before going further."
+
+**Report back in this shape:**
+
+- **Verdict:** Aligned / Partially aligned / Already in flight / Not aligned / Inconclusive
+- **Evidence:** the records you found, each cited by number and name (for example `GOAL0001023 - Reduce cost to serve by 15% in FY26`)
+- **Scope read:** which tables you queried and how many active records you read
+- **Metric mapping:** how the North Star metric from Stage 2 relates to the goal's own metric or target
+- **Duplicates:** any existing idea, demand, project, or program covering the same scope, with its state
+
+**Rules:**
+
+- Never state a verdict without a record number behind it. "Seems aligned" is not a verdict.
+- Never invent a goal, objective, or number. If the instance is unreachable and the customer cannot supply an extract, the verdict is "Inconclusive" and the gate below applies.
+- Read-only. Creating an Idea or Demand in the customer's instance requires them to ask for it explicitly, and you show the payload before sending it.
+- If the only match is thematic ("both are about automation"), that is Partially aligned, not Aligned. Name the gap.
+
+**The gate - if the verdict is Not aligned, Partially aligned, or Inconclusive, stop and say:**
+
+"I could not confirm this use case is part of your strategy in ServiceNow SPM. [State the verdict and what you read.] I cannot take this into the future-state design until one of three things happens:
+
+1. **You point me at the right objective.** If the strategy record exists and I missed it, give me its number or name and I will verify it.
+2. **You narrow or reframe the use case** so it serves an objective that does exist. We can go back to Stage 3 and re-select.
+3. **You accept the deviation formally.** If leadership wants this despite no strategic objective covering it, I need the name and role of the person accepting that, and the reason. I will record it in the document as an accepted strategic deviation, and it becomes a stakeholder approval item.
+
+Which of the three?"
+
+Wait for the answer. Do not proceed on silence, on "let us move on", or on your own judgement that the idea is obviously valuable. If option 3 is chosen, capture the accepting stakeholder's name, role, and stated reason verbatim before continuing.
+
+**If the verdict is Already in flight**, surface the duplicate before continuing: "There is already [number - short description] in [state] covering this scope. Is this session meant to replace it, extend it, or is this a different problem than it looks?" Record the answer.
+
+**Exit criteria:** The document can state a verdict, the records behind it, and - where the use case is not cleanly aligned - either a confirmed objective, a re-selected use case, or a named stakeholder accepting the deviation.
+
+**Output:** A Strategic Alignment section for the final document (both templates carry it).
 
 ## Stage 4: REFINE (Customer Question 4)
 
@@ -203,6 +253,8 @@ Based on the option the customer chose at the start, compile all outputs into th
 - For Option 1: follow `references/workshop-vision-template.md`
 - For Option 2: follow `references/prf-template.md`
 
+Both templates include a Strategic Alignment section. Fill it from Stage 3b using the record numbers you actually read — never leave it blank and never fill it from memory of the conversation alone.
+
 ## After Producing the Document
 
 Present the complete document to the customer and say:
@@ -228,6 +280,7 @@ Before producing the PRF, you need additional information not covered by the Wor
 - "What compliance or security requirements apply?"
 - "What are your biggest risks?"
 - "Who are the key stakeholders and what do they each need to approve?"
+- "Who owns the strategic objective this maps to in SPM? They are an approver." (from Stage 3b)
 - "What questions remain open that we could not answer today?"
 
 ## Facilitation Rules (Apply Throughout)
@@ -247,6 +300,7 @@ Before producing the PRF, you need additional information not covered by the Wor
 | 1  | **Listen:** Who is the customer and what insights do we have?           | Empathy map, journey, context                    |
 | 2  | **Define:** What is the prevailing problem or opportunity?              | Today Statement, HMW, North Star                 |
 | 3  | **Invent:** What is the solution? Why this one?                         | Use case selection, alternatives                 |
+| 3b | **Align (gate):** Is this idea part of the strategy in ServiceNow SPM?  | Alignment verdict, goal/demand records, duplicates |
 | 4  | **Refine:** How would we describe the end-to-end experience?            | Success vision, key benefit                      |
 | 5  | **Test and Iterate:** How will we measure success?                      | Metrics, targets, baselines                      |
 | 5b | **Technical Context (optional):** What are the key technical decisions? | Project type, stack, compliance, example code    |
@@ -259,6 +313,7 @@ Before ending the session, verify:
 - [ ] How Might We is validated by the customer
 - [ ] North Star has concrete metrics and a timeline
 - [ ] Use case is selected (not "being considered")
+- [ ] Strategic alignment verified in ServiceNow SPM, with record numbers cited — or a named stakeholder has formally accepted the deviation
 - [ ] At least 3 success criteria have numeric targets
 - [ ] Technical Context completed OR explicitly deferred to engineering team
 - [ ] The document (Workshop Vision or PRF) is approved

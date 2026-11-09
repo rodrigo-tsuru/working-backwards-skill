@@ -11,6 +11,16 @@ Use this template when the customer chose Option 1.
 - **Context:** [tech stack, purpose, current state from Stage 1]
 - **Why this use case was selected:** [from Stage 3]
 
+## Strategic Alignment (ServiceNow SPM)
+
+- **Verdict:** Aligned | Partially aligned | Already in flight | Accepted deviation
+- **Strategy record(s):** [number - name, from Stage 3b]
+- **How this use case serves it:** [1-2 sentences]
+- **Checked on:** [date] - [live SPM query | customer extract dated [date]]
+- **Tables read:** [tables queried and how many active records]
+- **Existing related records:** [demand/idea/project number and state, or "none found"]
+- **Accepted deviation (if applicable):** [name, role] accepted on [date] because [reason]
+
 ## Discarded Use Cases
 
 - [use case] - [why not selected, from Stage 3]

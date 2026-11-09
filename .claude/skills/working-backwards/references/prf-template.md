@@ -17,6 +17,20 @@ Use this template when the customer chose Option 2.
 
 [One paragraph from Stage 1: the current situation, what exists today, why this matters now]
 
+### Strategic alignment (ServiceNow SPM)
+
+**Verdict:** Aligned | Partially aligned | Already in flight | Accepted deviation
+
+| Strategy record | Name | How this use case serves it |
+|---|---|---|
+| [GOAL/number from Stage 3b] | [record name] | [which part of the objective this moves] |
+
+- **Checked on:** [date]  **Source:** live SPM query | customer extract dated [date]
+- **Tables read:** [e.g. sn_gf_goal, dmn_demand, pm_project - and how many active records]
+- **North Star to goal metric:** [how the Stage 5 metric maps to the goal's own target]
+- **Existing related records:** [demand/idea/project number and state, or "none found"]
+- **Accepted deviation (only if verdict is Accepted deviation):** [name, role] accepted on [date] because [reason, in their words]
+
 ### Problem statement
 
 [Expanded Today Statement from Stage 2. One or two paragraphs, stated from the user perspective, not the solution perspective]
@@ -90,6 +104,7 @@ Use this template when the customer chose Option 2.
 | Role | Name | Approval needed on |
 |---|---|---|
 | Sponsor | [name] | Problem and MVP scope |
+| SPM objective owner | [name] | Strategic alignment (or the accepted deviation) |
 | Product owner | [name] | Requirements and stories |
 | Tech lead | [name] | Application and NFR design |
 | Security | [name] | Extension opt-ins, gates |
