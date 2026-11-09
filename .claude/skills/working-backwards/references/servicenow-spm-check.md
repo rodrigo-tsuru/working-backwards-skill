@@ -104,15 +104,26 @@ list, and tell the customer which tables you actually read.
 
 ## 3. Run the check
 
+Every search in this section follows `servicenow-search.md`: sample the data
+first, keyword sets in each language the records use, every term on every
+field, page to the end, and a name sweep before any negative verdict.
+
 ### 3a. Pull the active strategy
 
 ```bash
 curl -sS "${SN_AUTH[@]}" \
-  "$SN_BASE/table/sn_gf_goal?sysparm_query=active=true&sysparm_display_value=all&sysparm_limit=100&sysparm_fields=sys_id,number,name,short_description,parent,owner,state,start_date,end_date"
+  "$SN_BASE/table/sn_gf_goal?sysparm_query=active=true&sysparm_display_value=all&sysparm_limit=100&sysparm_offset=0&sysparm_fields=sys_id,number,name,short_description,parent,owner,state,start_date,end_date"
 ```
 
 Repeat for each strategy-bearing table found in section 2, narrowing by
-`active=true` or by the current fiscal window where the table has dates.
+`active=true` or by the current fiscal window where the table has dates. Count
+first and page with `sysparm_offset` until you have read every row. Check the
+schema before filtering: a field such as `active`, `state` or `parent` may not
+exist on that table, and a filter on a missing field is ignored without error.
+Read the targets of every candidate goal too (for example `sn_gf_goal_target`),
+because the target names often state the intent more precisely than the goal.
+
+If a goal's `number` is empty, cite it by name and `sys_id`.
 
 ### 3b. Keyword search for the idea itself
 
@@ -131,9 +142,11 @@ curl -sS "${SN_AUTH[@]}" \
   "$SN_BASE/table/dmn_demand?sysparm_limit=20&sysparm_display_value=all&sysparm_fields=number,short_description,state,strategic_alignment,portfolio&sysparm_query=short_descriptionLIKE<keyword>^ORdescriptionLIKE<keyword>"
 ```
 
-Derive keywords from the use case name, the Today Statement, and the North Star
-metric — not from the customer's wording alone. Run two or three keyword sets so
-a single vocabulary mismatch does not produce a false "not in strategy".
+Build the keyword sets as `servicenow-search.md` section 2 describes: the use
+case, the customer's original request word for word, the tools from Stage 1,
+and synonyms, in every language the records are written in. Each term goes on
+every populated text field (`short_description`, `description`, `name`). One
+vocabulary mismatch must not produce a false "not in strategy".
 
 ### 3c. Classify the result
 
@@ -142,7 +155,7 @@ a single vocabulary mismatch does not produce a false "not in strategy".
 | **Aligned** | A specific active goal or objective record whose intent covers the use case, cited by number and name, plus how the North Star metric maps to that goal's metric or target |
 | **Partially aligned** | A matching goal exists but the use case serves a different user, metric, or timeframe than the goal commits to — state the gap precisely |
 | **Already in flight** | A demand, idea, project, or program covering the same scope already exists — cite its number and state, and say whether this session duplicates it |
-| **Not aligned** | Every strategy record was read and none covers the use case. Say which tables and how many records you read, so the negative is verifiable |
+| **Not aligned** | Every strategy record was read and none covers the use case. Say which tables, how many records, which keyword sets (and their languages) you used, and that the name sweep ran, so the negative is verifiable |
 
 A verdict with no record number behind it is not a verdict. If the data does not
 support a conclusion, say "inconclusive" and name what is missing.

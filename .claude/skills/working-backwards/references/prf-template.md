@@ -7,7 +7,7 @@ Use this template when the customer chose Option 2.
 
 **Author:** [customer name]    **Date:** [today]    **Status:** Draft
 
-**Type:** Greenfield | Brownfield    **Target release:** [from North Star timeline]
+**Type:** Greenfield | Brownfield (from Stage 3c)    **Target release:** [from North Star timeline]
 
 ---
 
@@ -30,6 +30,19 @@ Use this template when the customer chose Option 2.
 - **North Star to goal metric:** [how the Stage 5 metric maps to the goal's own target]
 - **Existing related records:** [demand/idea/project number and state, or "none found"]
 - **Accepted deviation (only if verdict is Accepted deviation):** [name, role] accepted on [date] because [reason, in their words]
+
+### Application portfolio (ServiceNow APM)
+
+**Verdict:** New application | Extends existing | Replaces existing | Accepted overlap
+
+| Business application | Name | Lifecycle stage | Owner | Relation to this use case |
+|---|---|---|---|---|
+| [APM/number from Stage 3c] | [name] | [stage] | [business / IT owner] | [extended / replaced / overlaps / integration point] |
+
+- **Checked on:** [date]  **Source:** live portfolio query | customer extract dated [date]
+- **Capability:** [business capability served, and how many active apps already provide it]
+- **Scope read:** [tables, keyword sets, number of records read - required for New application]
+- **Accepted overlap (only if verdict is Accepted overlap):** [name, role] accepted on [date] because [reason, in their words]
 
 ### Problem statement
 
@@ -69,7 +82,7 @@ Use this template when the customer chose Option 2.
 ### Constraints
 
 - **Must use:** [languages, frameworks, services - ask customer if not already stated]
-- **Must not change (brownfield only):** [existing APIs, schemas, services that must stay untouched]
+- **Must not change (brownfield only):** [existing APIs, schemas, services of the application from Stage 3c that must stay untouched]
 - **Compliance / security:** [e.g. PCI, LGPD, SOC2, internal security baseline]
 - **Non-functional targets:** [availability, latency, throughput, data residency]
 
@@ -105,6 +118,7 @@ Use this template when the customer chose Option 2.
 |---|---|---|
 | Sponsor | [name] | Problem and MVP scope |
 | SPM objective owner | [name] | Strategic alignment (or the accepted deviation) |
+| Application owner (brownfield only) | [name, from Stage 3c] | Changes to the existing application |
 | Product owner | [name] | Requirements and stories |
 | Tech lead | [name] | Application and NFR design |
 | Security | [name] | Extension opt-ins, gates |

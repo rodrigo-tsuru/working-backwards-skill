@@ -21,6 +21,16 @@ Use this template when the customer chose Option 1.
 - **Existing related records:** [demand/idea/project number and state, or "none found"]
 - **Accepted deviation (if applicable):** [name, role] accepted on [date] because [reason]
 
+## Application Portfolio (ServiceNow APM)
+
+- **Verdict:** New application | Extends existing | Replaces existing | Accepted overlap
+- **Project type:** Greenfield | Brownfield
+- **Business application(s):** [number - name - lifecycle stage - owner, from Stage 3c, or "none found"]
+- **Capability:** [business capability served, and how many active apps already provide it]
+- **Checked on:** [date] - [live portfolio query | customer extract dated [date]]
+- **Scope read:** [tables, keyword sets, number of records read]
+- **Accepted overlap (if applicable):** [name, role] accepted on [date] because [reason]
+
 ## Discarded Use Cases
 
 - [use case] - [why not selected, from Stage 3]

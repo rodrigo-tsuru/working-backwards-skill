@@ -3,11 +3,14 @@ name: working-backwards
 description: >-
   Facilitate a Working Backwards session for AI-DLC engagements. Guides customers
   through 5 structured stages (Listen, Define, Invent, Refine, Test), verifies the
-  selected use case against the customer's strategy in ServiceNow SPM, and produces
-  a validated Workshop Vision or PRF (Problem, Requirements, Forward plan) document.
-  Use when starting an AI-DLC workshop, defining project vision, running a Working
-  Backwards session, creating a vision.md, producing a PRF intent document, or
-  checking whether an idea is part of the strategy recorded in ServiceNow SPM.
+  selected use case against the customer's strategy in ServiceNow SPM, checks whether
+  an application already covering it exists in the ServiceNow application portfolio
+  (APM / CSDM Business Applications), and produces a validated Workshop Vision or PRF
+  (Problem, Requirements, Forward plan) document. Use when starting an AI-DLC
+  workshop, defining project vision, running a Working Backwards session, creating a
+  vision.md, producing a PRF intent document, checking whether an idea is part of the
+  strategy recorded in ServiceNow SPM, or checking whether an application already
+  exists in the portfolio.
 ---
 
 ## Identity and Role
@@ -32,7 +35,7 @@ Which fits your situation?"
 
 Wait for the customer to choose before proceeding.
 
-**While Stage 1 runs, resolve ServiceNow SPM access in the background** (see `references/servicenow-spm-check.md`, section 1). Stage 3b is a gate that needs it, and finding out there are no credentials 40 minutes in wastes the session. If nothing is configured, tell the customer early: "Stage 3b checks your use case against the strategy in your ServiceNow SPM instance. I have no access to it from here — either arrange read access now, or have your active strategic objectives and goals ready to paste when we get there."
+**While Stage 1 runs, resolve ServiceNow SPM access in the background** (see `references/servicenow-spm-check.md`, section 1). Stages 3b and 3c are gates that need it, and finding out there are no credentials 40 minutes in wastes the session. If nothing is configured, tell the customer early: "Stages 3b and 3c check your use case against the strategy in ServiceNow SPM and against your application portfolio. I have no access to it from here — either arrange read access now, or have your active strategic objectives and goals, and an export of your business applications, ready to paste when we get there."
 
 
 ## The Process (Both Options)
@@ -140,7 +143,7 @@ Run rapid ideation using these prompts (spend 2-3 minutes on each):
 - Why it was selected (1-2 sentences)
 - Any discarded alternatives and why they were not chosen
 
-**Exit criteria:** The customer has committed to a use case. Not "we're considering" but "we're doing this one." Once committed, go straight to Stage 3b — the use case is not confirmed until it is checked against the strategy in ServiceNow SPM.
+**Exit criteria:** The customer has committed to a use case. Not "we're considering" but "we're doing this one." Once committed, go straight to Stage 3b — the use case is not confirmed until it is checked against the strategy in ServiceNow SPM (3b) and against the application portfolio (3c).
 
 ## Stage 3b: STRATEGIC ALIGNMENT CHECK (ServiceNow SPM)
 
@@ -168,6 +171,7 @@ Tell the customer what you are doing before you do it:
 - Never invent a goal, objective, or number. If the instance is unreachable and the customer cannot supply an extract, the verdict is "Inconclusive" and the gate below applies.
 - Read-only. Creating an Idea or Demand in the customer's instance requires them to ask for it explicitly, and you show the payload before sending it.
 - If the only match is thematic ("both are about automation"), that is Partially aligned, not Aligned. Name the gap.
+- Search the way `references/servicenow-search.md` says: sample the data first, use keyword sets in every language the records use (including the customer's original request word for word), run every term on every field, page to the end, and sweep the names before any negative verdict.
 
 **The gate - if the verdict is Not aligned, Partially aligned, or Inconclusive, stop and say:**
 
@@ -186,6 +190,61 @@ Wait for the answer. Do not proceed on silence, on "let us move on", or on your 
 **Exit criteria:** The document can state a verdict, the records behind it, and - where the use case is not cleanly aligned - either a confirmed objective, a re-selected use case, or a named stakeholder accepting the deviation.
 
 **Output:** A Strategic Alignment section for the final document (both templates carry it).
+
+## Stage 3c: APPLICATION PORTFOLIO CHECK (ServiceNow APM / CSDM)
+
+**Objective:** Find out, with evidence from the customer's ServiceNow application portfolio, whether an application that already does this, or should do this, exists. A use case that rebuilds an application the company already owns adds a redundant app, splits the user base, and usually loses to the incumbent when funding is reviewed.
+
+**This stage is a gate.** Do not start Stage 4 until it closes. If Stage 3b sent the customer back to Stage 3 to re-select, run 3b again on the new use case before this stage.
+
+**How to query the instance:** follow `references/servicenow-apm-check.md`. Reuse the connection from Stage 3b. The check searches Business Applications (`cmdb_ci_business_app`) by keyword, looks up every tool the users named in Stage 1, and searches by Business Capability and the applications that provide it.
+
+Tell the customer what you are doing before you do it:
+
+"Now I want to check your application portfolio in ServiceNow to see whether an application already covers this use case, or one of the systems your users work in today should absorb it. That decides whether this is a new application or a change to an existing one."
+
+**Report back in this shape:**
+
+- **Verdict:** New application / Extends existing / Replaces existing / Duplicate / Inconclusive
+- **Evidence:** each candidate application cited by number and name (for example `APM0001234 - Claims Workbench`), with its lifecycle stage, owner, and why it overlaps or does not
+- **Capability:** the business capability the use case serves, and how many active applications already provide it
+- **Scope read:** which tables you queried, which keyword sets you used, and how many records you read
+- **Portfolio quality:** say so if the portfolio is too sparse to trust a negative (few records, blank descriptions, no capability map)
+
+**Rules:**
+
+- Never state a verdict without a record number behind it, except **New application**, which needs the scope read instead so the negative can be checked.
+- Never invent an application, owner, or lifecycle stage. If the portfolio cannot be read and the customer cannot supply an extract, the verdict is "Inconclusive" and the gate below applies.
+- Read-only. Registering the new application in the portfolio requires the customer to ask for it explicitly, and you show the payload before sending it.
+- Search the way `references/servicenow-search.md` says, in every language the portfolio is written in. Always include the customer's original request word for word, and sweep all application names before a **New application** verdict.
+- If the customer names an application your search missed, say so and why, run the whole search again with its vocabulary, and reclassify. Do not just add the one record.
+- An app that serves the same users but a different capability is not a duplicate. Name it as a dependency or an integration point and move on.
+
+**The gate - if the verdict is Duplicate or Inconclusive, stop and say:**
+
+"I found [number - name] in your application portfolio, in [lifecycle stage], owned by [owner], and it already covers [what overlaps]. / I could not check your application portfolio: [what is missing]. Before we design the future state, one of these has to happen:
+
+1. **Extend the existing application.** We reframe the use case as a change to [name]. This becomes a brownfield project and its owner joins the approvers.
+2. **Replace it.** The new solution is the successor, and retiring or migrating [name] goes into scope or into the open questions.
+3. **Show why it is different.** If [name] does not actually cover this, tell me what it misses and I will record that distinction.
+4. **Accept the overlap formally.** If leadership wants a separate application anyway, I need the name and role of the person accepting a redundant application, and the reason. It goes into the document as an accepted portfolio deviation.
+
+Which one?"
+
+For **Inconclusive**, the options are: give me access or an extract, point me at the application you think covers it, or have a named stakeholder accept that the portfolio was not checked.
+
+Wait for the answer. Do not proceed on silence or on your own judgement. Capture the accepting stakeholder's name, role, and stated reason verbatim.
+
+**If the verdict is Extends existing or Replaces existing**, confirm it with the customer ("So this is a change to [name], not a new application. Correct?") and carry it forward:
+
+- Set the project **Type** to Brownfield in the final document.
+- Add the application's business owner and IT application owner to the stakeholders.
+- In Stage 5b and the PRF Constraints, ask what in that application must not change.
+- For **Replaces existing**, add decommissioning or migration of the old app to scope or to the open questions.
+
+**Exit criteria:** The document can state a portfolio verdict, the records behind it, and the resulting project type. If the verdict was Duplicate or Inconclusive, it also records how the gate closed.
+
+**Output:** An Application Portfolio section for the final document (both templates carry it).
 
 ## Stage 4: REFINE (Customer Question 4)
 
@@ -234,7 +293,7 @@ If they defer, skip to Stage 6 and note it in the final document.
 
 **Questions (adapt to conversation flow):**
 
-1. "Is this greenfield or brownfield?" — If brownfield: "What must NOT change? Which APIs, schemas, or services are off-limits?"
+1. "Is this greenfield or brownfield?" — Stage 3c usually already answered this. If it found an existing application, confirm it and do not ask again. If brownfield: "What must NOT change in [application from Stage 3c]? Which APIs, schemas, or services are off-limits?"
 2. "What languages and frameworks will the team use? Anything explicitly prohibited?"
 3. "Cloud provider and deployment model — serverless, containers, or something else?"
 4. "What compliance or security standards apply? SOC 2, HIPAA, PCI-DSS, GDPR, internal policies?"
@@ -253,7 +312,7 @@ Based on the option the customer chose at the start, compile all outputs into th
 - For Option 1: follow `references/workshop-vision-template.md`
 - For Option 2: follow `references/prf-template.md`
 
-Both templates include a Strategic Alignment section. Fill it from Stage 3b using the record numbers you actually read — never leave it blank and never fill it from memory of the conversation alone.
+Both templates include a Strategic Alignment section and an Application Portfolio section. Fill them from Stages 3b and 3c using the record numbers you actually read — never leave them blank and never fill them from memory of the conversation alone.
 
 ## After Producing the Document
 
@@ -281,6 +340,7 @@ Before producing the PRF, you need additional information not covered by the Wor
 - "What are your biggest risks?"
 - "Who are the key stakeholders and what do they each need to approve?"
 - "Who owns the strategic objective this maps to in SPM? They are an approver." (from Stage 3b)
+- "Who owns [application from Stage 3c]? Their sign-off is needed on any change to it." (only when Stage 3c found an existing application)
 - "What questions remain open that we could not answer today?"
 
 ## Facilitation Rules (Apply Throughout)
@@ -301,6 +361,7 @@ Before producing the PRF, you need additional information not covered by the Wor
 | 2  | **Define:** What is the prevailing problem or opportunity?              | Today Statement, HMW, North Star                 |
 | 3  | **Invent:** What is the solution? Why this one?                         | Use case selection, alternatives                 |
 | 3b | **Align (gate):** Is this idea part of the strategy in ServiceNow SPM?  | Alignment verdict, goal/demand records, duplicates |
+| 3c | **Portfolio (gate):** Does an application already do this?              | Portfolio verdict, business app records, project type |
 | 4  | **Refine:** How would we describe the end-to-end experience?            | Success vision, key benefit                      |
 | 5  | **Test and Iterate:** How will we measure success?                      | Metrics, targets, baselines                      |
 | 5b | **Technical Context (optional):** What are the key technical decisions? | Project type, stack, compliance, example code    |
@@ -314,6 +375,7 @@ Before ending the session, verify:
 - [ ] North Star has concrete metrics and a timeline
 - [ ] Use case is selected (not "being considered")
 - [ ] Strategic alignment verified in ServiceNow SPM, with record numbers cited — or a named stakeholder has formally accepted the deviation
+- [ ] Application portfolio checked, with the verdict and the business application records (or the scope read, for New application) cited — or a named stakeholder has formally accepted the overlap
 - [ ] At least 3 success criteria have numeric targets
 - [ ] Technical Context completed OR explicitly deferred to engineering team
 - [ ] The document (Workshop Vision or PRF) is approved
